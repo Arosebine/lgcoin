@@ -1,20 +1,40 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
+const shortid = require('shortid');
+ 
 
 
 
 
 
 const userSchema = new mongoose.Schema({
-  first_name: {
+  username: {
     type: String,
     required: true,
-    unique: false
+    unique: true,
+    trim: true,
+    minlength: 5
+  },
+  wallet: {
+    type: String,
+  },
+  referralCode: {
+    type: String,
+    default: shortid.generate(),
+  },
+   wallet_balance: {
+    type: Number,
+    default: '0',
+  },
+  first_name: {
+    type: String,
+    
+
   },
   last_name: {
     type: String,
-    required: true,
-    unique: false
+  
+  
   },
   email: {
     type: String,
@@ -32,17 +52,11 @@ const userSchema = new mongoose.Schema({
   },
   role: {
     type: String,
-    required: false,
     enum: ['user', 'admin'],
     default: 'user',
     index: true,
   },
-  profile: {
-    type: mongoose.Schema.Types.Mixed,
-    required: false,
-    default: {},
-    index: true,
-  },
+  
   image: {
     type: String,
     default: '',

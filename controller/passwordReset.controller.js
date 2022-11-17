@@ -1,4 +1,4 @@
-const User  = require("../models/users.model");
+const User  = require("../models/user.model");
 const Token = require("../models/forgotPass.model");
 const sendEmail = require("../utils/emailsender");
 const crypto = require("crypto");
@@ -18,17 +18,25 @@ exports.passwordReset = async (req, res) => {
         if (!user)
             return res.status(400).send("user with given email doesn't exist");
 
-        let token = await Token.findOne({ userId: user._id });
-        if (!token) {
-            token = await new Token({
+        
+           const token = await new Token({
                 userId: user._id,
+                email: req.body.email,
                 token: crypto.randomBytes(32).toString("hex"),
             }).save();
-        }
+        
 
         const link = `${process.env.BASE_URL}/password-reset/${user._id}/${token.token}`;
-        await sendEmail(user.email, "Password reset", link);
-
+        await sendEmail({
+            email: user.email,
+            subject: `${user.first_name} ${user.last_name} Requested Reset Password Successfully`,
+            message: `<div>
+                   <h1>HELLO ${user.first_name}</h1>
+                   <h2>"password reset", ${link} </h2><br><br>
+                   <p>If you did not request a password reset, please ignore this email.</p>
+                   </div>`,
+                   });
+                   
         res.send("password reset link sent to your email account");
     } catch (error) {
         res.send("An error occurred");
@@ -87,6 +95,7 @@ exports.resetPassword = async (req, res) => {
 
         user.password = req.body.newPassword;
         await user.save();
+    
 
         res.send("password reset successfully.");
     } catch (error) {

@@ -1,5 +1,4 @@
 require('dotenv').config();
-
 const createError = require('http-errors');
 const express = require('express');
 const path = require('path');
@@ -14,6 +13,7 @@ const connectDB = require('./database/databs');
 
 const app = express();
 connectDB();
+
 const port = process.env.PORT || 7630;
 
 // view engine setup

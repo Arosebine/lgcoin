@@ -2,6 +2,7 @@ const User = require('../models/user.model');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const cloudinary = require('../utils/cloudinary');
+const sendEmail = require('../utils/emailsender');
 
 
 
@@ -9,16 +10,18 @@ const cloudinary = require('../utils/cloudinary');
 
 exports.userSignup = async (req, res) => { 
     try {
-        const { first_name, last_name, email, image, password } = req.body;
+        const { username, first_name, last_name, email, image, password } = req.body;
         console.log(req.body);
         // validation
-        if (!(first_name && last_name && email && password && image)) {
+        if ((username, first_name && last_name && email && password && image)) {
             res.status(400).send("All input is required");
         };
-
+        const bankAcct = Math.floor(Math.random() * 10000000000);
         const pic = await cloudinary.uploader.upload(req.file.path);
 
         const user = await User.create({ 
+          username,
+          wallet: bankAcct,
           first_name, 
           last_name, 
           email,
@@ -31,20 +34,33 @@ exports.userSignup = async (req, res) => {
                 user,
             },
         });
+        await sendEmail({
+          email: user.email,
+          subject: `${user.first_name} Registered Successfully`,
+          message: `<div>
+                   <h1>Hello ${user.first_name}</h1>
+                   <h2>"Wallet Number:", ${user.wallet} </h2><br><br>
+                   <h2>"Wallet_balace:", ${user.wallet_balance} </h2><br><br>
+                   <h2>"Referral Code:", ${user.referralCode} </h2><br><br>
+                   <p>You can use your referral code to invite your friends and colleagues and earns N1,200 and your wallet will be credited within 24hrs if the referral successfully subscribe.</p>
+                   </div>`
+                  
+        });
     } catch (err) {
         res.status(400).json({
             status: 'fail',
             message: err,
         });
+        console.log(err);
     }
 };
 
 
 exports.userLogin = async (req, res) => {
-  const { password, email } = req.body;
+  const { password, username } = req.body;
   try {
     // validation
-    if (!(password && email)) {
+    if (!(password && username)) {
       return res.status(400).json({ message: 'Please fill all fields' });
     }
     // check if user exist in database
@@ -107,26 +123,6 @@ exports.queryAllUsers = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
-
-
-exports.isAuth = async (req, res, next) => {
-    try {
-        // 0      1
-        // Bearer token
-        const token = req.headers.authorization.split(' ')[1];
-        const decoded = jwt.verify(token, process.env.JWT_KEY);
-        const user = await User.findOne({ _id: decoded._id, 'tokens.token': token });
-        if (!user) {
-            throw new Error();
-        }
-        req.user = user;
-        req.token = token;
-        next();
-    } catch (error) {
-        res.status(401).send({ error: 'Please authenticate.' });
-    }
-};
-
 exports.isAdmin = async (req, res, next) => {
 
     if (req.user.role !== 'admin') {
@@ -148,3 +144,59 @@ exports.userLogout = async (req, res) => {
 };
 
 
+// update the image 
+exports.updateImage = async (req, res) => {
+  try {
+    const pic = await cloudinary.uploader.upload(req.file.path)
+    const user = await User.findOneAndUpdate(
+      { username: req.params.username },
+      { image: pic.secure_url },
+      { new: true }
+    );
+    res.status(200).json({ user });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
+// update the password
+exports.updatePassword = async (req, res) => {
+  try {
+    const user = await User.findOneAndUpdate(
+      { username: req.params.username },
+      { password: req.params.password },
+      { new: true }
+    );
+    res.status(200).json({ user });
+
+    // remove token from database
+    const token = await jwt.sign(
+      {
+        _id: user._id,
+      },
+      process.env.SECRET_KEY,
+      {
+        expiresIn: '2d',
+      }
+    );
+
+    // store token in cookie ====> web browser local storage
+    res.cookie('access-token', token);
+
+    return res
+     .status(202)
+     .json({ message: 'User updated the password successfully', token: token });
+
+  } catch (err) {
+    console.log(err);
+    return res
+     .status(500)
+     .json({ error: err.message, message: 'internal server error' });
+  }
+};
+
+
+
+// 
