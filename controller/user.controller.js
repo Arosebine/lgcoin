@@ -39,9 +39,10 @@ exports.userSignup = async (req, res) => {
           subject: `${user.first_name} Registered Successfully`,
           message: `<div>
                    <h1>Hello ${user.first_name}</h1>
-                   <h2>"Wallet Number:", ${user.wallet} </h2><br><br>
-                   <h2>"Wallet_balace:", ${user.wallet_balance} </h2><br><br>
-                   <h2>"Referral Code:", ${user.referralCode} </h2><br><br>
+                   <h2>Username: ${user.username} </h2><br><br>
+                   <h2>Wallet Number: ${user.wallet} </h2><br><br>
+                   <h2>Wallet Balace: ${user.wallet_balance} </h2><br><br>
+                   <h2>Referral Code: ${user.referralCode} </h2><br><br>
                    <p>You can use your referral code to invite your friends and colleagues and earns N1,200 and your wallet will be credited within 24hrs if the referral successfully subscribe.</p>
                    </div>`
                   
