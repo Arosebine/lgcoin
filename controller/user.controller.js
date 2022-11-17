@@ -65,7 +65,7 @@ exports.userLogin = async (req, res) => {
       return res.status(400).json({ message: 'Please fill all fields' });
     }
     // check if user exist in database
-    const checkUser = await User.findOne({ email: email });
+    const checkUser = await User.findOne({ username: username });
     // if user doesn't exist throw error
     if (!checkUser) {
       return res.status(404).json({ message: 'user not found' });
