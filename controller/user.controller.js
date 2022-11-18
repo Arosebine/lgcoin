@@ -85,9 +85,8 @@ exports.userLogin = async (req, res) => {
     });
     // store token in cookie ====> web browser local storage
     res.cookie('access-token', token);
-    return res
-      .status(202)
-      .json({ message: 'User logged in successfully', token: token });
+    res.render('https://lgc-platform.vercel.app/Dashboard', {user: checkUser});
+      
   } catch (error) {
     console.log(error);
     return res
