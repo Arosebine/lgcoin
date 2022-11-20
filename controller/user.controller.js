@@ -86,7 +86,7 @@ exports.userLogin = async (req, res) => {
     });
     // store token in cookie ====> web browser local storage
     res.cookie('access-token', token);
-    res.status(200).json({ message: 'user logged in successfully', user: checkUser});
+    res.status(200).json({ message: 'user logged in successfully', user: checkUser, token: token });
       
   } catch (error) {
     console.log(error);
