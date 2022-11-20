@@ -152,17 +152,18 @@ exports.userLogout = async (req, res) => {
 // update the image 
 exports.updateImage = async (req, res) => {
   try {
-    const username = req.params.username;
-    const user = await User.find({ username: username });
+    const id = req.params.id;
+    const user = await User.find({ _id: id });
     if (!user) {
       return res.status(404).json({ message: 'user not found' });
     }
     const { image } = req.body;
     const pic = await cloudinary.uploader.upload(req.file.path);
-    const imageUser = await User.findOneAndUpdate(
-      { username: username },
-      { $set: { image: pic.secure_url } },
-      { new: true }
+    const imageUser = await User.findByIdAndUpdate(
+      { _id: id,
+         image: pic.secure_url
+     },
+     { new: true }
     );
     res.status(200).json({ message: 'image updated successfully', imageUser });
   } catch (err) {
@@ -176,19 +177,19 @@ exports.updateImage = async (req, res) => {
 // update the password
 exports.updatePassword = async (req, res) => {
   try {
-    const username = req.params.username;
-    const user = await User.find({username: username});
+    const id = req.params.id;
+    const user = await User.findById({_id: id });
     if (!user) {
       throw new Error('user does not exist');
     }
     const { password } = req.body;
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(password, salt);
-    const updatePassword = await User.findOneAndUpdate(
-      username,
-      {
-        password: hashedPassword,
+    const updatePassword = await User.findByIdAndUpdate(
+      { _id: id, 
+        password: hashedPassword
       },
+      
       {
         new: true,
       }
