@@ -17,6 +17,7 @@
     "express": "~4.16.1",
     "http-errors": "~1.6.3",
     "joi": "^17.7.0",
+    "json2csv": "^5.0.7",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.2",
     "morgan": "~1.9.1",

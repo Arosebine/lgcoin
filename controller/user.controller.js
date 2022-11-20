@@ -3,6 +3,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const cloudinary = require('../utils/cloudinary');
 const sendEmail = require('../utils/emailsender');
+const Transaction = require('../models/transaction.model');
 
 
 
@@ -85,7 +86,7 @@ exports.userLogin = async (req, res) => {
     });
     // store token in cookie ====> web browser local storage
     res.cookie('access-token', token);
-    res.render('https://lgc-platform.vercel.app/Dashboard', {user: checkUser});
+    res.status(200).json({ message: 'user logged in successfully', user: checkUser});
       
   } catch (error) {
     console.log(error);
@@ -123,6 +124,9 @@ exports.queryAllUsers = async (req, res) => {
     res.status(500).json({ error: 'Server error' });
   }
 };
+
+
+
 exports.isAdmin = async (req, res, next) => {
 
     if (req.user.role !== 'admin') {
@@ -130,6 +134,7 @@ exports.isAdmin = async (req, res, next) => {
     }
     next();
 };
+
 
 exports.userLogout = async (req, res) => {
     try {
@@ -198,5 +203,28 @@ exports.updatePassword = async (req, res) => {
 };
 
 
+// view all the transactions 
 
-// 
+exports.getTransactions = async (req, res) => {
+  try {
+    const transactions = await Transaction.find(
+      {},
+      {
+        _id: 0,
+        createdAt: 0,
+      }
+    );
+    res.status(200).json({ transactions });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+    return;
+  }
+};
+
+    
+
+
+
+
+

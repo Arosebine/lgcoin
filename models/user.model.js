@@ -46,21 +46,24 @@ const userSchema = new mongoose.Schema({
   password: {
     type: String,
     required: true,
-    minlength: 8,
-    maxlength: 64,
-    unique: true,   
+    trim: true,
+    complexity: {
+      min: 8,
+      max: 64
+    }
+
+  
   },
   role: {
     type: String,
     enum: ['user', 'admin'],
     default: 'user',
-    index: true,
   },
   
   image: {
     type: String,
     default: '',
-    index: true,
+  
   },
 }, {timestamps: true});
 
