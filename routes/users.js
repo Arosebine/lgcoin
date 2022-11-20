@@ -2,6 +2,7 @@ const express = require('express');
 const { passwordReset, assignedPassword } = require('../controller/passwordReset.controller');
 const { userSignup, queryAll, updateImage, updatePassword, queryAllUsers, userLogin, getTransactions } = require('../controller/user.controller');
 const { verify_token, createUser } = require('../controller/userEmail.controller');
+const { isAuth } = require('../middleware/authenticate');
 const upload = require('../utils/multer')
 const router = express.Router();
 
@@ -22,8 +23,8 @@ router.get('/resetPassword', assignedPassword );
 router.post('/create', upload.single('file'), createUser );
 router.put('/verify_token/:id', verify_token );
 router.get('/viewall', queryAll );
-router.put('/updateImage/:username', upload.single('file'), updateImage );
-router.put('/updatePassword/:username', updatePassword );
+router.put('/updateImage/:username', isAuth, upload.single('file'), updateImage );
+router.put('/updatePassword/:username', isAuth, updatePassword );
 router.get('/view/:first_name', queryAllUsers );
 router.get('/view/:username', queryAllUsers );
 router.post('/login', userLogin );

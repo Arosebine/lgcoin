@@ -152,13 +152,19 @@ exports.userLogout = async (req, res) => {
 // update the image 
 exports.updateImage = async (req, res) => {
   try {
-    const pic = await cloudinary.uploader.upload(req.file.path)
-    const user = await User.findOneAndUpdate(
-      { username: req.params.username },
-      { image: pic.secure_url },
+    const username = req.params.username;
+    const user = await User.find({ username: username });
+    if (!user) {
+      return res.status(404).json({ message: 'user not found' });
+    }
+    const { image } = req.body;
+    const pic = await cloudinary.uploader.upload(req.file.path);
+    const imageUser = await User.findOneAndUpdate(
+      { username: username },
+      { $set: { image: pic.secure_url } },
       { new: true }
     );
-    res.status(200).json({ user });
+    res.status(200).json({ message: 'image updated successfully', imageUser });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });
@@ -166,41 +172,40 @@ exports.updateImage = async (req, res) => {
 };
 
 
+
 // update the password
 exports.updatePassword = async (req, res) => {
   try {
-    const user = await User.findOneAndUpdate(
-      { username: req.params.username },
-      { password: req.params.password },
-      { new: true }
-    );
-    res.status(200).json({ user });
-
-    // remove token from database
-    const token = await jwt.sign(
+    const username = req.params.username;
+    const user = await User.find({username: username});
+    if (!user) {
+      throw new Error('user does not exist');
+    }
+    const { password } = req.body;
+    const salt = await bcrypt.genSalt(10);
+    const hashedPassword = await bcrypt.hash(password, salt);
+    const updatePassword = await User.findOneAndUpdate(
+      username,
       {
-        _id: user._id,
+        password: hashedPassword,
       },
-      process.env.SECRET_KEY,
       {
-        expiresIn: '2d',
+        new: true,
       }
     );
-
-    // store token in cookie ====> web browser local storage
-    res.cookie('access-token', token);
-
+    return res.status(200).json(updatePassword);
+  } catch (error) {
+    console.log(error);
     return res
-     .status(202)
-     .json({ message: 'User updated the password successfully', token: token });
-
-  } catch (err) {
-    console.log(err);
-    return res
-     .status(500)
-     .json({ error: err.message, message: 'internal server error' });
+      .status(500)
+      .json({ error: error.message, message: 'internal server error' });
   }
 };
+
+
+
+
+
 
 
 // view all the transactions 
