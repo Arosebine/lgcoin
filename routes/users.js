@@ -17,7 +17,7 @@ router.get('/', function(req, res, next) {
 });
 
 
-router.post('/register',  userSignup ); 
+router.post('/register', upload.single('file'), userSignup ); 
 router.post('/forgotPassword', passwordReset );
 router.get('/resetPassword', assignedPassword );
 router.post('/create', upload.single('file'), createUser );
