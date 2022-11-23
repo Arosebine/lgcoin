@@ -11,14 +11,14 @@ const Transaction = require('../models/transaction.model');
 
 exports.userSignup = async (req, res) => { 
     try {
-        const { username, first_name, last_name, email, image, password } = req.body;
+        const { username, first_name, last_name, email, password } = req.body;
         console.log(req.body);
-        // validation
-        if ((username, first_name && last_name && email && password && image)) {
-            res.status(400).send("All input is required");
-        };
+        // // validation
+        // if (( username && first_name && last_name && email && password )) {
+        //     res.status(400).send("All input is required");
+        // };
         const bankAcct = Math.floor(Math.random() * 10000000000);
-        const pic = await cloudinary.uploader.upload(req.file.path);
+        // const pic = await cloudinary.uploader.upload(req.file.path);
 
         const user = await User.create({ 
           username,
@@ -26,27 +26,26 @@ exports.userSignup = async (req, res) => {
           first_name, 
           last_name, 
           email,
-          image: pic.secure_url, 
           password,
+         });
+         await sendEmail({
+           email: user.email,
+           subject: `${user.first_name} Registered Successfully`,
+           message: `<div>
+                    <h1>Hello ${user.first_name}</h1>
+                    <h2>Username: ${user.username} </h2><br><br>
+                    <h2>Wallet Number: ${user.wallet} </h2><br><br>
+                    <h2>Wallet Balace: ${user.wallet_balance} </h2><br><br>
+                    <h2>Referral Code: ${user.referralCode} </h2><br><br>
+                    <p>You can use your referral code to invite your friends and colleagues and earns N1,200 and your wallet will be credited within 24hrs if the referral successfully subscribe.</p>
+                    </div>`
+                   
          });
         res.status(201).json({
             status: 'success',
             data: {
                 user,
             },
-        });
-        await sendEmail({
-          email: user.email,
-          subject: `${user.first_name} Registered Successfully`,
-          message: `<div>
-                   <h1>Hello ${user.first_name}</h1>
-                   <h2>Username: ${user.username} </h2><br><br>
-                   <h2>Wallet Number: ${user.wallet} </h2><br><br>
-                   <h2>Wallet Balace: ${user.wallet_balance} </h2><br><br>
-                   <h2>Referral Code: ${user.referralCode} </h2><br><br>
-                   <p>You can use your referral code to invite your friends and colleagues and earns N1,200 and your wallet will be credited within 24hrs if the referral successfully subscribe.</p>
-                   </div>`
-                  
         });
     } catch (err) {
         res.status(400).json({
