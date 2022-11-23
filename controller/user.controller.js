@@ -18,14 +18,14 @@ exports.userSignup = async (req, res) => {
         //     res.status(400).send("All input is required");
         // };
         const bankAcct = Math.floor(Math.random() * 10000000000);
-        const pic = await cloudinary.uploader.upload(req.file.path);
+        // const pic = await cloudinary.uploader.upload(req.file.path);
 
         const user = await User.create({ 
           username,
           wallet: bankAcct,
           first_name, 
           last_name,
-          image: pic.secure_url,
+          image,
           email,
           password,
          });
@@ -34,10 +34,10 @@ exports.userSignup = async (req, res) => {
            subject: `${user.first_name} Registered Successfully`,
            message: `<div>
                     <h1>Hello ${user.first_name}</h1>
-                    <h2>Username: ${user.username} </h2><br><br>
-                    <h2>Wallet Number: ${user.wallet} </h2><br><br>
-                    <h2>Wallet Balace: ${user.wallet_balance} </h2><br><br>
-                    <h2>Referral Code: ${user.referralCode} </h2><br><br>
+                    <h3>Username: ${user.username} </h3>
+                    <h3>Wallet Number: ${user.wallet} </h3>
+                    <h3>Wallet Balace: ${user.wallet_balance} </h3>
+                    <h3>Referral Code: ${user.referralCode} </h3>
                     <p>You can use your referral code to invite your friends and colleagues and earns N1,200 and your wallet will be credited within 24hrs if the referral successfully subscribe.</p>
                     </div>`
                    
