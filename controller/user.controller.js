@@ -18,7 +18,7 @@ exports.userSignup = async (req, res) => {
         //     res.status(400).send("All input is required");
         // };
         const bankAcct = Math.floor(Math.random() * 10000000000);
-        // const pic = await cloudinary.uploader.upload(req.file.path);
+        const pic = await cloudinary.uploader.upload(req.file.path);
 
         const user = await User.create({ 
           username,
