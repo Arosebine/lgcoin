@@ -25,7 +25,6 @@ exports.userSignup = async (req, res) => {
           wallet: bankAcct,
           first_name, 
           last_name,
-          image,
           email,
           password,
          });
