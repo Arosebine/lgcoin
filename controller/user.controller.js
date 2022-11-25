@@ -13,10 +13,10 @@ exports.userSignup = async (req, res) => {
     try {
         const { username, first_name, last_name, email, password } = req.body;
         console.log(req.body);
-        // // validation
-        // if (( username && first_name && last_name && email && password )) {
-        //     res.status(400).send("All input is required");
-        // };
+        // validation
+        if (!( username && first_name && last_name && email && password )) {
+            res.status(400).send("All input is required");
+        };
         const bankAcct = Math.floor(Math.random() * 10000000000);
         // const pic = await cloudinary.uploader.upload(req.file.path);
 
