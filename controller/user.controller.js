@@ -30,15 +30,9 @@ exports.userSignup = async (req, res) => {
          });
          await sendEmail({
            email: user.email,
-           subject: `${user.first_name} Registered Successfully`,
-           message: `<div>
-                    <h1>Hello ${user.first_name}</h1>
-                    <h3>Username: ${user.username} </h3>
-                    <h3>Wallet Number: ${user.wallet} </h3>
-                    <h3>Wallet Balace: ${user.wallet_balance} </h3>
-                    <h3>Referral Code: ${user.referralCode} </h3>
-                    <p>You can use your referral code to invite your friends and colleagues and earns N1,200 and your wallet will be credited within 24hrs if the referral successfully subscribe.</p>
-                    </div>`
+           subject: `${user.first_name}, Verify your email`,
+           message: `the link ${process.env.EMAIL_URL}/${user.id}, <br>
+                       Kindly click on the link to verify your email`
                    
          });
         res.status(201).json({
@@ -57,6 +51,56 @@ exports.userSignup = async (req, res) => {
 };
 
 
+exports.verifyEmail = async (req, res) => {
+    try {
+        const id  = req.params.id;
+        const user = await User.findOne({ _id: id });
+        if (!user) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'User not found',
+                data: {
+                    user,
+                },
+            });
+          };
+          // update the user's status 
+           await User.findByIdAndUpdate(
+            { _id: user._id 
+              
+            },
+            { $set: { status: 'active' } },
+            { new: true }        
+            );
+            await sendEmail({
+                email: user.email,
+                subject: 'Account verification successful',
+                message: `Your account has been verified successfully. You can now proceed to login
+                <br>
+                <div>
+                    <h1>Hello ${user.first_name}</h1>
+                    <h3>Username: ${user.username} </h3>
+                    <h3>Wallet Number: ${user.wallet} </h3>
+                    <h3>Wallet Balace: ${user.wallet_balance} </h3>
+                    <h3>Referral Code: ${user.referralCode} </h3>
+                    <p>You can use your referral code to invite your friends and colleagues and earns N1,200 and your wallet will be credited within 24hrs if the referral successfully subscribe.</p>
+                    </div>`              
+              });
+        res.status(200).json({
+            status: 'success',            
+            message: 'User verified successfully',
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err,
+        });
+        console.log(err);
+    }
+  };
+
+
+
 exports.userLogin = async (req, res) => {
   const { password, username } = req.body;
   try {
@@ -70,6 +114,10 @@ exports.userLogin = async (req, res) => {
     if (!checkUser) {
       return res.status(404).json({ message: 'user not found' });
     }
+     // check if status is pending
+    if (checkUser.status === 'pending') {
+      return res.status(400).json({ message: 'Your account is still pending, check your email box to verify your email' });
+    }
     // if user exist in database, check if user password is correct
     const checkPassword = await bcrypt.compare(password, checkUser.password);
     // if user password is not correct throw error ==> invalid credentials
@@ -81,7 +129,7 @@ exports.userLogin = async (req, res) => {
       _id: checkUser._id,
     };
     const token = await jwt.sign(payload, process.env.SECRET_KEY, {
-      expiresIn: '2d',
+      expiresIn: '1h',
     });
     // store token in cookie ====> web browser local storage
     res.cookie('access-token', token);

@@ -55,6 +55,11 @@ const userSchema = new mongoose.Schema({
     enum: ['user', 'admin'],
     default: 'user',
   },
+  status: {
+         type: String,
+         enum: ['pending', 'active'],
+         default: 'pending',
+      }, 
   
   image: {
     type: String,
