@@ -1,6 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const shortid = require('shortid');
+const referralCodeGenerator = require('referral-code-generator');
+
  
 
 
@@ -20,7 +22,8 @@ const userSchema = new mongoose.Schema({
   },
   referralCode: {
     type: String,
-    default: shortid.generate(),
+    default: referralCodeGenerator.custom('lowercase', 6, 8, 'lgcoins' ),
+  
   },
    wallet_balance: {
     type: Number,

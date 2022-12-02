@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const cloudinary = require('../utils/cloudinary');
 const sendEmail = require('../utils/emailsender');
 const Transaction = require('../models/transaction.model');
+const referralCodeGenerator = require('referral-code-generator');
 
 
 
@@ -24,7 +25,7 @@ exports.userSignup = async (req, res) => {
           username,
           wallet: bankAcct,
           first_name, 
-          last_name,
+          last_name,          
           email,
           password,
          });
