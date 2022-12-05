@@ -20,7 +20,6 @@ router.get('/', function(req, res, next) {
 router.post('/register',  userSignup ); 
 router.post('/forgotPassword', passwordReset );
 router.get('/resetPassword', assignedPassword );
-router.post('/create', upload.single('file'), createUser );
 router.put('/verify_token/:id', verify_token );
 router.get('/viewall', queryAll );
 router.put('/image/:id', isAuth, upload.single('file'), updateImage );
