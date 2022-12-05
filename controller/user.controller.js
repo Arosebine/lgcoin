@@ -4,7 +4,8 @@ const bcrypt = require('bcrypt');
 const cloudinary = require('../utils/cloudinary');
 const sendEmail = require('../utils/emailsender');
 const Transaction = require('../models/transaction.model');
-const referralCodeGenerator = require('referral-code-generator');
+
+
 
 
 
@@ -12,7 +13,7 @@ const referralCodeGenerator = require('referral-code-generator');
 
 exports.userSignup = async (req, res) => { 
     try {
-        const { username, first_name, last_name, email, password } = req.body;
+        const { username, first_name, last_name, email, referral, password } = req.body;
         console.log(req.body);
         // validation
         if (!( username && first_name && last_name && email && password )) {
@@ -27,6 +28,7 @@ exports.userSignup = async (req, res) => {
           first_name, 
           last_name,          
           email,
+          referral,
           password,
          });
          await sendEmail({
@@ -36,6 +38,14 @@ exports.userSignup = async (req, res) => {
                        Kindly click on the link to verify your email`
                    
          });
+         await User.findByIdAndUpdate({
+          _id: user._id
+          }, 
+          { 
+            $inc: { referralCount: +1 }
+          },
+          { new: true }
+          );
         res.status(201).json({
             status: 'success',
             data: {

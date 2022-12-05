@@ -30,14 +30,13 @@ const userSchema = new mongoose.Schema({
     default: '0',
   },
   first_name: {
-    type: String,
-    
+    type: String,  
 
   },
   last_name: {
     type: String,
-  
-  
+    
+    
   },
   email: {
     type: String,
@@ -51,12 +50,15 @@ const userSchema = new mongoose.Schema({
     required: true,
     minlength: 8,
     maxlength: 64,
-  
+    
   },
   role: {
     type: String,
     enum: ['user', 'admin'],
     default: 'user',
+  },
+  referral: {
+    type: String,
   },
   status: {
          type: String,
@@ -69,6 +71,11 @@ const userSchema = new mongoose.Schema({
     default: '',
   
   },
+   referralCount: {
+        type: Number,
+        default: 0,
+    },
+
 }, {timestamps: true});
 
 
