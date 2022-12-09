@@ -38,14 +38,6 @@ exports.userSignup = async (req, res) => {
                        Kindly click on the link to verify your email`
                    
          });
-         await User.findByIdAndUpdate({
-          _id: user._id
-          }, 
-          { 
-            $inc: { referralCount: +1 }
-          },
-          { new: true }
-          );
         res.status(201).json({
             status: 'success',
             data: {
@@ -93,8 +85,8 @@ exports.verifyEmail = async (req, res) => {
                     <h3>Username: ${user.username} </h3>
                     <h3>Wallet Number: ${user.wallet} </h3>
                     <h3>Wallet Balace: ${user.wallet_balance} </h3>
-                    <h3>Referral Code: ${user.referralCode} </h3>
-                    <p>You can use your referral code to invite your friends and colleagues and earns N1,200 and your wallet will be credited within 24hrs if the referral successfully subscribe.</p>
+                    <h3>Referral link: ${process.env.REFERRAL_URL}?${user.referralCode} </h3>
+                    <p>You can share your referral link with your friends and colleagues and earns N1,200 and your wallet will be credited within 24hrs if the referral successfully subscribe.</p>
                     </div>`              
               });
         res.status(200).json({
@@ -286,7 +278,40 @@ exports.getTransactions = async (req, res) => {
   }
 };
 
+
+exports.referralLink = async (req, res)=>{
+  try {
+     const referralCode  = req.params.referralCode;
+     console.log(referralCode);
+        const user = await User.findOne({ referralCode: referralCode });
+        if (!user) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'User not found',
+                data: {
+                    user,
+                },
+            });
+          };
+    await User.findOneAndUpdate({
+      referralCode: user.referralCode
+         },
+          { 
+            $inc: { referralCount: +1 }
+          },
+          { new: true }
+          );
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({
+      status: 'fail',
+      message: 'Server error',
+      data: {
+        error,
+      },
+    })
     
+  }}
 
 
 

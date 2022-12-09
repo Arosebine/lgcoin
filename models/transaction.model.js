@@ -23,13 +23,13 @@ const transactionSchema = new mongoose.Schema({
     customer: {
         type: String,
     }, 
-    customer_email: {
+    email: {
         type: String,
     }, 
-    customer_phone: {
+    phone_number: {
         type: String,
     }, 
-    customer_name: {
+    name: {
         type: String,
     },
     user: {
@@ -44,7 +44,7 @@ const transactionSchema = new mongoose.Schema({
 }
 );
 
-
+    
 
 
 module.exports = mongoose.model('Transaction', transactionSchema);

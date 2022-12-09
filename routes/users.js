@@ -1,6 +1,7 @@
 const express = require('express');
 const { passwordReset, assignedPassword } = require('../controller/passwordReset.controller');
-const { userSignup, queryAll, updateImage, updatePassword, queryAllUsers, userLogin, getTransactions, verifyEmail } = require('../controller/user.controller');
+const { lgcoinBuy } = require('../controller/transaction.controller');
+const { userSignup, queryAll, updateImage, updatePassword, queryAllUsers, userLogin, getTransactions, verifyEmail, referralLink } = require('../controller/user.controller');
 const { verify_token, createUser } = require('../controller/userEmail.controller');
 const { isAuth } = require('../middleware/authenticate');
 const upload = require('../utils/multer')
@@ -29,6 +30,10 @@ router.get('/view/:username', queryAllUsers );
 router.post('/login', userLogin );
 router.get('/transactions', getTransactions );
 router.get('/email_verify/:id', verifyEmail );
+router.get('/referral_verify/:referralCode', referralLink );
+
+//payment channel
+router.post('/flutterwave', lgcoinBuy );
 
  
 
