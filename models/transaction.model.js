@@ -9,7 +9,7 @@ const transactionSchema = new mongoose.Schema({
         ref: 'User'
     },    
     amount: {
-        type: String,
+        type: Number,
     }, 
     currency: {
         type: String,
@@ -47,4 +47,4 @@ const transactionSchema = new mongoose.Schema({
     
 
 
-module.exports = mongoose.model('Transaction', transactionSchema);
+module.exports = mongoose.model('Transact', transactionSchema);
