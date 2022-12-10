@@ -79,7 +79,7 @@ exports.lgcoinPaystack = async (req, res) => {
                         Kindly click on the link to verify your email`
             });
             // to update user wallet
-            const user = await User.findOne({ email: coinbuying.email });
+            const user = await User.findOne({ customer: coinbuying.customer });
             const newWallet = user.wallet + coinbuying.amount;
             res.status(201).json({ coinbuying });
         }
