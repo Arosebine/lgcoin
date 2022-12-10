@@ -80,7 +80,15 @@ exports.lgcoinPaystack = async (req, res) => {
             });
             // to update user wallet
             const user = await User.findOne({ first_name: coinbuying.customer });
-            const newWallet = user.wallet + coinbuying.amount;
+        
+          // update the user's status 
+           await User.findByIdAndUpdate(
+            { _id: user._id 
+              
+            },
+            { $set: { wallet: + coinbuying.amount } },
+            { new: true }        
+            );
             res.status(201).json({ coinbuying });
         }
 
