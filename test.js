@@ -12,5 +12,3 @@ const tee = referralCodeGenerator.custom('lowercase', 3, 10, 'user');
 console.log(tee);
 
 
-
-
