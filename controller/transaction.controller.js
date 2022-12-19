@@ -93,6 +93,15 @@ exports.lgcoinPaystack = async (req, res) => {
             },
             { new: true }        
             );
+            const referralUpdate = await User.findOneAndUpdate(
+                { 
+                    referralCode: coinbuying.referralCode
+                },
+                {
+                    $inc: {referralCount: + 1200}
+                },
+                { new: true}
+            );
             res.status(201).json({ coinbuying, newWallet });
         }
 
