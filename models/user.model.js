@@ -26,8 +26,8 @@ const userSchema = new mongoose.Schema({
   
   },
    wallet_balance: {
-    type: Number,
-    default: '0',
+    type: mongoose.Decimal128,
+    default: 0.0,
   },
   first_name: {
     type: String,  
