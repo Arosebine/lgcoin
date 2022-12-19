@@ -89,7 +89,7 @@ exports.lgcoinPaystack = async (req, res) => {
                 email: coinbuying.email             
             },
             { 
-                $inc: { wallet: + coinbuying.amount }
+                $inc: { wallet_balance: + coinbuying.amount }
             },
             { new: true }        
             );
