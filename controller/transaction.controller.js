@@ -30,7 +30,10 @@ exports.lgcoinFlutterwave = async (req, res) => {
                         Kindly click on the link to verify your email`
             });
             // to update user wallet
-            const newWallet = await User.findOneAndUpdate({ email: coinbuying.email },
+            const newWallet = await User.findOneAndUpdate(
+                { 
+                    email: coinbuying.email
+                 },
                 {
                     $inc: {wallet_balance: + coinbuying.amount }
                 },
@@ -81,14 +84,16 @@ exports.lgcoinPaystack = async (req, res) => {
                         Kindly click on the link to verify your email`
             });
             // to update user wallet
-           await User.findOneAndUpdate(
+           const newWallet = await User.findOneAndUpdate(
             { 
-                first_name: coinbuying.customer              
+                email: coinbuying.email             
             },
-            { $set: { wallet: + coinbuying.amount } },
+            { 
+                $inc: { wallet: + coinbuying.amount }
+            },
             { new: true }        
             );
-            res.status(201).json({ coinbuying });
+            res.status(201).json({ coinbuying, newWallet });
         }
 
     } catch (err) {
