@@ -9,7 +9,8 @@ const transactionSchema = new mongoose.Schema({
         ref: 'User'
     },    
     amount: {
-        type: Number,
+        type: mongoose.Decimal128,
+        default: 0.0
     }, 
     currency: {
         type: String,

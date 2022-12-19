@@ -9,9 +9,7 @@ const User = require('../models/user.model');
 // to receive event and Flutterwave data from convoy webhook
 exports.lgcoinFlutterwave = async (req, res) => {
     try {
-        const { event, data } = req.body;
-        console.log(event);
-        console.log(data);
+        const { event, data } = req.body;       
         if(event === 'charge.completed'){
             const coinbuying = await Transaction.create({
                 amount: data.amount,
@@ -32,8 +30,14 @@ exports.lgcoinFlutterwave = async (req, res) => {
                         Kindly click on the link to verify your email`
             });
             // to update user wallet
-            const user = await User.findOne({ email: coinbuying.email });
-            const newWallet = user.wallet + coinbuying.amount;
+            const newWallet = await User.findOneAndUpdate({ email: coinbuying.email },
+                {
+                    $inc: {wallet_balance: + coinbuying.amount }
+                },
+                { 
+                    new: true
+                }
+                );
             res.status(201).json({ coinbuying });
         }
 
@@ -55,9 +59,7 @@ exports.lgcoinFlutterwave = async (req, res) => {
 // to receive event and Paystack data from convoy webhook
 exports.lgcoinPaystack = async (req, res) => {
     try {
-        const { event, data } = req.body;
-        console.log(event);
-        console.log(data);
+        const { event, data } = req.body;      
         if(event === 'charge.success'){
             const coinbuying = await Transaction.create({
                 amount: data.amount,
@@ -79,12 +81,9 @@ exports.lgcoinPaystack = async (req, res) => {
                         Kindly click on the link to verify your email`
             });
             // to update user wallet
-            const user = await User.findOne({ first_name: coinbuying.customer });
-        
-          // update the user's status 
-           await User.findByIdAndUpdate(
-            { _id: user._id 
-              
+           await User.findOneAndUpdate(
+            { 
+                first_name: coinbuying.customer              
             },
             { $set: { wallet: + coinbuying.amount } },
             { new: true }        
@@ -97,6 +96,5 @@ exports.lgcoinPaystack = async (req, res) => {
             status: 'fail',
             message: err,
         });
-        console.log(err);
     }
 }
