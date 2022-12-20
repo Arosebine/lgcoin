@@ -316,4 +316,71 @@ exports.referralLink = async (req, res)=>{
 
 
 
+// update user 
+exports.updateUser = async (req, res) => {
+  try {
+    const { username, first_name, last_name, email, phone_number, address, city, state, country, smart_chain } = req.body;
+
+    const user = await User.findOne({ username : username });
+    if (!user) {
+      return res.status(404).json({ message: 'user not found' });
+    }
+    const updateUser = await User.findByIdAndUpdate(
+        {
+          _id: user.id,
+        },
+        {
+          phone_number,
+          address,
+          city,
+          state,
+          country,
+          smart_chain
+        
+        },
+        {
+          new: true,
+        }
+      );
+    res.status(200).json({ message: 'user updated successfully', updateUser });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
+
+// delete user
+exports.deleteUser = async (req, res) => {
+  try {
+    const id = req.params.id;
+    const user = await
+      User.findById
+      ({ 
+        _id: id
+      });
+    if (!user) {
+      return res.status(404).json({ message: 'user not found' });
+    }
+    const deleteUser
+      = await
+      User.findByIdAndDelete(
+        {
+          _id: id
+        },
+        {
+          new: true,
+        }
+      );
+    res.status(200).json({ message: 'user deleted successfully', deleteUser });
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
+
+// view all the users
 
