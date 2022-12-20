@@ -9,7 +9,12 @@ const User = require('../models/user.model');
 exports.bankSignup = async (req, res) => {
     try {
         const { username, account_name, account_number, bank_name, account_type } = req.body;
-        const user = await User.findOne({ username: username })      
+        const user = await User.findOne({ username: username })
+        if (!user) {
+            return res.status(400).json({
+                status: 'fail',
+                message: 'User does not exist',
+            })};      
     
         const bank = await Bank.create(
             {
