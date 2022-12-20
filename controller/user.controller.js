@@ -85,7 +85,7 @@ exports.verifyEmail = async (req, res) => {
                     <h3>Username: ${user.username} </h3>
                     <h3>Wallet Number: ${user.wallet} </h3>
                     <h3>Wallet Balance: ${user.wallet_balance} </h3>
-                    <h3>Referral link: ${process.env.REFERRAL_URL}?referralCode=${user.referralCode} </h3>
+                    <h3>Referral link: ${process.env.REFERRAL_URL}?ref=${user.referralCode} </h3>
                     <p>You can share your referral link with your friends and colleagues and earns N1,200 and your wallet will be credited within 24hrs if the referral successfully subscribe.</p>
                     </div>`              
               });

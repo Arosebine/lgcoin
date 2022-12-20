@@ -53,6 +53,22 @@ const userSchema = new mongoose.Schema({
     maxlength: 64,
     
   },
+  phone: {
+    type: String,
+    unique: true,
+  },
+  state: {
+    type: String,
+  },
+  country: {
+    type: String,
+  },
+  address: {
+    type: String,
+  },
+  smart_chain: {
+    type: String,
+  },
   role: {
     type: String,
     enum: ['user', 'admin'],

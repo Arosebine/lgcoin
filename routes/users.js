@@ -4,6 +4,7 @@ const { lgcoinBuy, lgcoinFlutterwave, lgcoinPaystack } = require('../controller/
 const { userSignup, queryAll, updateImage, updatePassword, queryAllUsers, userLogin, getTransactions, verifyEmail, referralLink } = require('../controller/user.controller');
 const { verify_token, createUser } = require('../controller/userEmail.controller');
 const { isAuth } = require('../middleware/authenticate');
+const { bankSignup, updateBankDetails, deleteBankDetails, bankDetails, getBankDetails, }= require('../controller/bank.controller');
 const upload = require('../utils/multer')
 const router = express.Router();
 
@@ -35,6 +36,17 @@ router.get('/referral_verify/:referralCode', referralLink );
 //payment channel
 router.post('/flutterwave', lgcoinFlutterwave );
 router.post('/paystack', lgcoinPaystack );
+
+
+// Bank Details
+
+router.post('/post', bankSignup );
+router.get('/get_banks', bankDetails );
+router.put('/bank_update', updateBankDetails );
+router.get('/alldetails', getBankDetails );
+router.delete('/delete_bank', deleteBankDetails );
+
+
 
  
 
