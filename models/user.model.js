@@ -78,8 +78,8 @@ const userSchema = new mongoose.Schema({
     default: 'user',
   },
   referral: {
-    type: mongoose.Schema.ObjectId,
-    ref: 'Referral',
+    type: String,
+    
   },
   status: {
          type: String,
