@@ -20,6 +20,7 @@ router.get('/', function(req, res, next) {
 
 
 router.post('/register',  userSignup ); 
+router.post('/login', userLogin );
 router.post('/forgotPassword', passwordReset );
 router.get('/resetPassword', assignedPassword );
 router.put('/verify_token/:id', verify_token );
@@ -28,7 +29,6 @@ router.put('/image/:id', isAuth, upload.single('file'), updateImage );
 router.put('/password/:id', isAuth, updatePassword );
 router.get('/view/:first_name', queryAllUsers );
 router.get('/view/:username', queryAllUsers );
-router.post('/login', userLogin );
 router.get('/transactions', getTransactions );
 router.get('/email_verify/:id', verifyEmail );
 router.get('/referral_verify/:referralCode', referralLink );
