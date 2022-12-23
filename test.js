@@ -1,14 +1,59 @@
-const referralCodeGenerator = require('referral-code-generator');
+const topselling = await Product.aggregate([
+  {
+    $group: {
+      _id: "$product",
+      avgRating: { $avg: "$rating" }
+    }
+  },
+  { $sort: { avgRating: -1 } },
+  {
+    $lookup: {
+      from: "products", // update your actual product collection name
+      localField: "_id",
+      foreignField: "_id",
+      as: "product"
+    }
+  },
+  { $unwind: "$product" },
+  {
+    $project: {
+      name: "$product.name",
+      avgRating: 1
+    }
+  }
+]).exec();
 
 
 
 
 
 
-const code = referralCodeGenerator.custom('lowercase', 3, 7)
-console.log(code);
+// top 5 selling product 
+exports.top5 = async ()=> {
 
-const tee = referralCodeGenerator.custom('lowercase', 3, 10, 'user');
-console.log(tee);
+  const topselling = await Product.aggregate([
+    {
+      $group: {
+        _id: "$product",
+        avgRating: { $avg: "$rating" }
+      }
+    },
+    { $sort: { avgRating: -1 } },
+    {
+      $project: {
+        name: "$product.name",
+        avgRating: 1
+      }
+    },
+    {
+      $limit: 5
+    }
+  ]).exec();
+
+  console.log(topselling);
+
+}
 
 
+
+// to get all products with the highest rating

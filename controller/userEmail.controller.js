@@ -79,3 +79,177 @@ exports.verify_token = async (req, res) => {
     res.status(400).send("An error occured");
   }
 };
+
+
+
+
+
+
+exports.search_sales = async (req, res) => {
+  try {
+    const query = {
+      title: req.query.title,
+      product: req.query.product,
+      brand: req.query.brand,
+      category: req.query.category,
+    };
+    const cursor = Item.find(query);
+    const items = await cursor.toArray();
+    res.send(items);
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
+
+// to know the food Item selling fast in the cart
+exports.cart_item = async (req, res) => {
+
+  try {
+    const cart = req.session.cart;
+    const itemId = req.params.itemId;
+    const item = await Item.findById(itemId);
+    if (!item) {
+      res.status(400).send("Invalid item");
+    }
+    else {
+      for (let i = 0; i < cart.length; i++) {
+        if (cart[i]._id === itemId) {
+          cart[i].quantity++;
+          cart[i].save();
+          res.send("item added in the cart");
+        }
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
+
+// to know the food Item selling fast in the cart
+exports.cart_delete = async (req, res) => {
+
+  try {
+    const cart = req.session.cart;
+    const itemId = req.params.itemId;
+    const
+
+     item = await Item.findById(itemId);
+
+     for (let i = 0; i < cart.length; i++) {
+
+      if (cart[i]._id === itemId) {
+        cart.splice(i, 1);
+        cart.save();
+        res.send("item deleted from the cart");
+      }
+    }
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+
+
+// to update the quantity of the cart item
+exports.cart_update = async (req, res) => {
+
+  try {
+    const cart = req.session.cart;
+    const itemId = req.params.itemId;
+    const
+
+     item = await Item.findById(itemId);
+
+     for (let i = 0; i < cart.length; i++) {
+
+      if (cart[i]._id === itemId) {
+        cart[i].quantity--;
+        cart[i].save();
+        res.send("item updated in the cart");
+      }
+    }
+  } catch (error) {
+
+    console.log(error);
+  }
+};
+
+
+
+//to know the cart items quantity
+exports.cart_quantity = async (req, res) => {
+
+  try {
+    const cart = req.session.cart;
+    res.send(cart);
+  } catch (error) {
+
+    console.log(error);
+  }
+};
+
+
+
+// to know the total cost of the cart items
+exports.cart_totalCost = async (req, res) => {
+
+  try {
+    const cart = req.session.cart;
+    const
+
+     totalCost = 0;
+
+     for (let i = 0; i < cart.length; i++) {
+
+      if (cart[i].quantity > 0) {
+        totalCost += cart[i].price * cart[i].quantity;
+      }
+    }
+
+    res.send(totalCost);
+  } catch (error) {
+
+    console.log(error);
+  }
+};
+
+
+
+//to delete a cart item
+exports.cart_delete = async (req, res) => {
+
+  try {
+    const cart = req.session.cart;
+    const itemId = req.params.itemId;
+    for (let i = 0; i < cart.length; i++) {
+
+      if (cart[i]._id === itemId) {
+        cart[i].delete();
+        res.send("item deleted from the cart");
+      }
+    }
+  } catch (error) {
+
+    console.log(error);
+  }
+};
+
+
+
+// to clear the cart
+exports.clear_cart = async (req, res) => {
+
+  try {
+    req.session.cart = [];
+    res.send("cart cleared");
+  } catch (error) {
+
+    console.log(error);
+  }
+}

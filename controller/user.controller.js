@@ -13,7 +13,7 @@ const Transaction = require('../models/transaction.model');
 
 exports.userSignup = async (req, res) => { 
     try {
-        const { username, first_name, last_name, email, referral, password } = req.body;
+        const { username, first_name, last_name, email, referralCode, password } = req.body;
         console.log(req.body);
         // validation
         if (!( username && first_name && last_name && email && password )) {
@@ -22,13 +22,22 @@ exports.userSignup = async (req, res) => {
         const bankAcct = Math.floor(Math.random() * 10000000000);
         // const pic = await cloudinary.uploader.upload(req.file.path);
 
+        const reff = await User.findOneAndUpdate(
+        {
+          referralCode: referralCode,
+        },
+        {
+          $inc: { referralCount: +1 }
+        },
+        {
+          new : true
+        });
         const user = await User.create({ 
           username,
           wallet: bankAcct,
           first_name, 
           last_name,          
           email,
-          referral,
           password,
          });
          await sendEmail({
@@ -357,26 +366,13 @@ exports.updateUser = async (req, res) => {
 // delete user
 exports.deleteUser = async (req, res) => {
   try {
-    const id = req.params.id;
-    const user = await
-      User.findById
-      ({ 
-        _id: id
-      });
+    const username = req.params.username;
+    const user = await User.findOne({ username : username });
     if (!user) {
       return res.status(404).json({ message: 'user not found' });
     }
-    const deleteUser
-      = await
-      User.findByIdAndDelete(
-        {
-          _id: id
-        },
-        {
-          new: true,
-        }
-      );
-    res.status(200).json({ message: 'user deleted successfully', deleteUser });
+    const result = await User.deleteOne({ _id: user.id });
+    res.status(200).json({ message: 'user deleted successfully' });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Server error' });
@@ -385,5 +381,30 @@ exports.deleteUser = async (req, res) => {
 
 
 
-// view all the users
+
+// create new address
+exports.createAddress = async (req, res) => {
+  try {
+    const { street_address, city, state, country, zip_code } = req.body;
+    const address = await Address.create({
+      street_address,
+      city,
+      state,
+      country,
+      zip_code
+    });
+    res.status(200).json({
+      message: 'address created successfully',
+      address
+    });
+  } catch (err) {
+    console.error(err);
+    return res.status(500).json({ error: 'Server error' });
+  }
+};
+
+
+
+      
+
 

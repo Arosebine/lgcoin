@@ -93,7 +93,7 @@ const userSchema = new mongoose.Schema({
   
   },
    referralCount: {
-        type: Number,
+        type: mongoose.Decimal128,
         default: 0,
     },
 
