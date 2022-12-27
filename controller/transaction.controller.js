@@ -81,8 +81,8 @@ exports.lgcoinPaystack = async (req, res) => {
                 subject: `${coinbuying.name}, Thank you for buying ${coinbuying.amount} ${coinbuying.currency} worth of LG Coin`,
                 message: `Hello ${coinbuying.name}, <br>
                         You have successfully bought ${coinbuying.amount} ${coinbuying.currency} worth of LG Coin. <br>
-                        Your transaction reference is ${coinbuying.tx_ref}. <br>
-                        Kindly click on the link to verify your email`
+                        Your transaction reference is ${coinbuying.tx_ref}. <br><br><br>
+                        Thanks for patronage`
             });
             // to update user wallet
            const newWallet = await User.findOneAndUpdate(
@@ -90,19 +90,10 @@ exports.lgcoinPaystack = async (req, res) => {
                 email: coinbuying.email             
             },
             { 
-                $inc: { wallet_balance: + coinbuying.amount }
+                $inc: { wallet_balance: + 1500.00 }
             },
             { new: true }        
-            );
-            const referralUpdate = await User.findOneAndUpdate(
-                { 
-                    referralCode: coinbuying.referralCode
-                },
-                {
-                    $inc: {referralCount: + 1200}
-                },
-                { new: true}
-            );
+            );           
             res.status(201).json({ coinbuying, newWallet });
         }
 
