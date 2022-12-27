@@ -25,14 +25,14 @@ router.post('/forgotPassword', passwordReset );
 router.get('/resetPassword', assignedPassword );
 router.put('/verify_token/:id', verify_token );
 router.get('/viewall', queryAll );
-router.put('/image/:username', isAuth, upload.single('file'), updateImage );
+router.put('/image/:username',  updateImage );
 router.put('/password/:id', isAuth, updatePassword );
 router.get('/view/:first_name', queryAllUsers );
 router.get('/view/:username', queryAllUsers );
 router.get('/transactions', getTransactions );
 router.get('/email_verify/:id', verifyEmail );
 router.get('/referral_verify/:referralCode', referralLink );
-router.put('/updateUser', updateUser );
+router.put('/updateUser', isAuth, upload.single('image'), updateUser );
 router.delete('/deleteUser/:username', deleteUser );
 
 

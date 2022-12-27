@@ -331,12 +331,13 @@ exports.referralLink = async (req, res)=>{
 // update user 
 exports.updateUser = async (req, res) => {
   try {
-    const { username, first_name, last_name, email, phone_number, address, city, state, country, smart_chain } = req.body;
+    const { username,  phone_number, image, address, city, state, country, smart_chain } = req.body;
 
     const user = await User.findOne({ username : username });
     if (!user) {
       return res.status(404).json({ message: 'user not found' });
-    }
+    };
+    const pic = await cloudinary.uploader.upload(req.file.path);
     const updateUser = await User.findByIdAndUpdate(
         {
           _id: user.id,
@@ -344,6 +345,7 @@ exports.updateUser = async (req, res) => {
         {
           phone_number,
           address,
+          image: pic.secure_url,
           city,
           state,
           country,
