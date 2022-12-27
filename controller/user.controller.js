@@ -359,7 +359,8 @@ exports.updateUser = async (req, res) => {
     res.status(200).json({ message: 'user updated successfully', updateUser });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error' });
+    res.status(500).json({ error: 'Server error', message: 'kindly attached image and phone number' });
+ 
   }
 };
 
