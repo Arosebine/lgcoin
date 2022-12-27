@@ -26,8 +26,8 @@ exports.lgcoinFlutterwave = async (req, res) => {
                 subject: `${coinbuying.name}, Thank you for buying ${coinbuying.amount} ${coinbuying.currency} worth of LG Coin`,
                 message: `Hello ${coinbuying.name}, <br>
                         You have successfully bought ${coinbuying.amount} ${coinbuying.currency} worth of LG Coin. <br>
-                        Your transaction reference is ${coinbuying.tx_ref}. <br>
-                        Kindly click on the link to verify your email`
+                        Your transaction reference is ${coinbuying.tx_ref}. <br><br>
+                        Thanks for patronage`
             });
             // to update user wallet
             const newWallet = await User.findOneAndUpdate(
