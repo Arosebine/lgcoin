@@ -211,16 +211,16 @@ exports.userLogout = async (req, res) => {
 // update the image 
 exports.updateImage = async (req, res) => {
   try {
-    const id = req.params.id;
-    const user = await User.findOne({ _id: id });
+    const username = req.params.username;
+    const user = await User.findOne({ username: username });
     if (!user) {
       return res.status(404).json({ message: 'user not found' });
     }
     
     const pic = await cloudinary.uploader.upload(req.file.path);
-    const imageUser = await User.findByIdAndUpdate(
+    const imageUser = await User.findOneAndUpdate(
       { 
-        _id: id,
+        username: username,
       },
       {
          image: pic.secure_url

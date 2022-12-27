@@ -76,11 +76,7 @@ const userSchema = new mongoose.Schema({
     type: String,
     enum: ['user', 'admin'],
     default: 'user',
-  },
-  referral: {
-    type: String,
-    
-  },
+  },  
   status: {
          type: String,
          enum: ['pending', 'active'],

@@ -25,7 +25,7 @@ router.post('/forgotPassword', passwordReset );
 router.get('/resetPassword', assignedPassword );
 router.put('/verify_token/:id', verify_token );
 router.get('/viewall', queryAll );
-router.put('/image/:id', isAuth, upload.single('file'), updateImage );
+router.put('/image/:username', isAuth, upload.single('file'), updateImage );
 router.put('/password/:id', isAuth, updatePassword );
 router.get('/view/:first_name', queryAllUsers );
 router.get('/view/:username', queryAllUsers );
