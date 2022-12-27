@@ -35,7 +35,7 @@ exports.lgcoinFlutterwave = async (req, res) => {
                     email: coinbuying.email
                  },
                 {
-                    $inc: {wallet_balance: + coinbuying.amount }
+                    $inc: {wallet_balance: + coinbuying.amount - 350000}
                 },
                 { 
                     new: true
