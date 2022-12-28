@@ -15,3 +15,25 @@ module.exports = multer({
     cb(null, true);
   },
 });
+
+
+// ---------------------------
+
+module.exports = ok({
+  storage: multer.diskStorage({ maxFiles: 1, maxFileSize: '10MB' }),
+  fileFilter: (req, file, cb) => {
+    let ext = path.extname(file.originalname);
+    if (ext !== '.jpg' && ext !== '.jpeg' && ext !== '.png' && ext !== '.JPG' && ext !== '.JPEG' && ext !== '.PNG') {
+      cb(new Error('File type is not supported'), false);
+      return;
+    }
+    cb(null, true);
+  },
+});
+
+
+
+
+
+
+

@@ -32,7 +32,7 @@ router.get('/view/:username', queryAllUsers );
 router.get('/transactions', getTransactions );
 router.get('/email_verify/:id', verifyEmail );
 router.get('/referral_verify/:referralCode', referralLink );
-router.put('/updateUser', isAuth, upload.single('image'), updateUser );
+router.put('/updateUser', upload.single('image'), updateUser );
 router.delete('/deleteUser/:username', deleteUser );
 
 
