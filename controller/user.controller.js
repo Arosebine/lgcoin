@@ -331,7 +331,7 @@ exports.referralLink = async (req, res)=>{
 // update user 
 exports.updateUser = async (req, res) => {
   try {
-    const { username,  phone_number, address, city, state, country, smart_chain } = req.body;
+    const { username,  phone_number, address, city, state, image, country, smart_chain } = req.body;
 
     const user = await User.findOne({ username : username });
     if (!user) {
@@ -347,6 +347,7 @@ exports.updateUser = async (req, res) => {
           address,
           city,
           state,
+          image,
           country,
           smart_chain
         
@@ -358,7 +359,7 @@ exports.updateUser = async (req, res) => {
     res.status(200).json({ message: 'user updated successfully', updateUser });
   } catch (err) {
     console.error(err);
-    res.status(500).json({ error: 'Server error', message: 'kindly attached image and phone number' });
+    res.status(500).json({ error: 'Server error' });
  
   }
 };
