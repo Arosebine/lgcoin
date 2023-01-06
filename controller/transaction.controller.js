@@ -64,7 +64,7 @@ exports.lgcoinFlutterwave = async (req, res) => {
 exports.lgcoinPaystack = async (req, res) => {
     try {
         const { event, data } = req.body;      
-        if(event === 'charge.completed'){  // it suppose to be 'charge.success' for paystack.
+        if(event === 'charge.success'){
             const coinbuying = await Transaction.create({
                 amount: data.amount,
                 currency: data.currency,
