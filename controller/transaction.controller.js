@@ -142,23 +142,21 @@ exports.lgcoinPaystack = async (req, res) => {
 // to receive event and Squad GTbank data from convoy webhook
 exports.lgcoinSquad = async (req, res) => {
     try {
-        const { event, data } = req.body;      
-        if(event === 'charge.success'){
+        const { Event, Body } = req.body; 
+        console.log(Event, Body);     
+        if(Event === "charge_successful"){
             const coinbuying = await Transaction.create({
-                amount: data.amount,
-                currency: data.currency,
-                tx_ref: data.reference,
-                status: data.status,
-                customer: data.customer.first_name,
-                email: data.customer.email,
-                phone_number: data.customer.phone,
-                name: data.customer.last_name,
-
+                amount: Body.amount,
+                currency: Body.currency,
+                tx_ref: Body.reference,
+                status: Body.transaction_status,
+                customer: Body.first_name,
+                email: Body.email,
             });
             await sendEmail({
                 email: coinbuying.email,
-                subject: `${coinbuying.name}, Thank you for buying ${coinbuying.amount} ${coinbuying.currency} worth of LG Coin`,
-                message: `Hello ${coinbuying.name}, <br>
+                subject: `${coinbuying.email}, Thank you for buying ${coinbuying.amount} ${coinbuying.currency} worth of LG Coin`,
+                message: `Hello ${coinbuying.email}, <br>
                         You have successfully bought ${coinbuying.amount} ${coinbuying.currency} worth of LG Coin. <br>
                         Your transaction reference is ${coinbuying.tx_ref}. <br><br><br>
                         Thanks for patronage`
@@ -173,7 +171,7 @@ exports.lgcoinSquad = async (req, res) => {
             },
             { new: true }        
             );
-            const refer = await Referral.findOne({ email })
+            const refer = await Referral.findOne({ email: coinbuying.email })
             if(refer){
                 const userUpdate = await User.findOneAndUpdate({
                     referralCode: refer.referralCode,
@@ -190,13 +188,14 @@ exports.lgcoinSquad = async (req, res) => {
                 )
             }
 
-
         }
+        res.status(201).send('successful')
 
     } catch (err) {
         res.status(400).json({
             status: 'fail',
             message: err,
         });
+        console.log(err);
     }
 }
