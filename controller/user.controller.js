@@ -4,6 +4,7 @@ const bcrypt = require('bcrypt');
 const cloudinary = require('../utils/cloudinary');
 const sendEmail = require('../utils/emailsender');
 const Transaction = require('../models/transaction.model');
+const Referral = require('../models/referral.model');
 
 
 
@@ -19,6 +20,22 @@ exports.userSignup = async (req, res) => {
         if (!( username && first_name && last_name && email && password )) {
             res.status(400).send("All input is required");
         };
+        const existEmail = await User.findOne({ email })
+        if(existEmail){
+          res.status(500).send("This email is already exist")
+        };
+        const existUsername = await User.findOne({ username })
+        if(existUsername){
+          res.status(500).send("This username is already exist")
+        };
+        const referralUser = await User.findOne({ referralCode })
+        const createReferral = await Referral.create({
+            userId: referralUser.id,
+            username: referralUser.username,
+            email: email,
+            referralCode: referralCode
+          });
+        
         const bankAcct = Math.floor(Math.random() * 10000000000);
         // const pic = await cloudinary.uploader.upload(req.file.path);
 
@@ -27,7 +44,7 @@ exports.userSignup = async (req, res) => {
           referralCode: referralCode,
         },
         {
-          $inc: { referralCount: +1 }
+          $inc: { referralNode: +1 }
         },
         {
           new : true

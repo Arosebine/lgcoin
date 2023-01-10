@@ -92,6 +92,10 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Decimal128,
         default: 0,
     },
+  referralNode: {
+        type: mongoose.Decimal128,
+        default: 0,
+    },
 
 }, {timestamps: true});
 

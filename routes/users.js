@@ -1,6 +1,6 @@
 const express = require('express');
 const { passwordReset, assignedPassword } = require('../controller/passwordReset.controller');
-const { lgcoinBuy, lgcoinFlutterwave, lgcoinPaystack } = require('../controller/transaction.controller');
+const { lgcoinBuy, lgcoinFlutterwave, lgcoinPaystack, lgcoinSquad } = require('../controller/transaction.controller');
 const { userSignup, queryAll, updateImage, updatePassword, queryAllUsers, userLogin, getTransactions, verifyEmail, referralLink, updateUser, deleteUser } = require('../controller/user.controller');
 const { verify_token, createUser } = require('../controller/userEmail.controller');
 const { isAuth } = require('../middleware/authenticate');
@@ -40,6 +40,7 @@ router.delete('/deleteUser/:username', deleteUser );
 //payment channel
 router.post('/flutterwave', lgcoinFlutterwave );
 router.post('/paystack', lgcoinPaystack );
+router.post('/squad', lgcoinSquad );
 
 
 // Bank Details

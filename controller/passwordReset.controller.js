@@ -49,12 +49,15 @@ exports.passwordReset = async (req, res) => {
 
 exports.assignedPassword = async (req, res) => {
     try {
-        const schema = Joi.object({ password: Joi.string().required() });
+        const schema = Joi.object({
+            username: Joi.string().required(),
+            password: Joi.string().required() 
+        });
         const { error } = schema.validate(req.body);
         if (error) return res.status(400).send(error.details[0].message);
 
-        const user = await User.findById(req.params.userId);
-        if (!user) return res.status(400).send("invalid link or expired");
+        const user = await User.findOne(req.params.username);
+        if (!user) return res.status(400).send("invalid username");
 
         const token = await Token.findOne({
             userId: user._id,
@@ -79,13 +82,14 @@ exports.assignedPassword = async (req, res) => {
 exports.resetPassword = async (req, res) => {
     try {
         const schema = Joi.object({
+            username: Joi.string().required(),
             currentPassword: Joi.string().required(),
             newPassword: Joi.string().required(),
         });
         const { error } = schema.validate(req.body);
         if (error) return res.status(400).send(error.details[0].message);
 
-        const user = await User.findById(req.user._id);
+        const user = await User.findOne({ username });
         if (!user) return res.status(400).send("invalid link or expired");
 
         const validPassword = await user.comparePassword(
