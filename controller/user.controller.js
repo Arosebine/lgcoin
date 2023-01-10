@@ -29,13 +29,14 @@ exports.userSignup = async (req, res) => {
           res.status(500).send("This username is already exist")
         };
         const referralUser = await User.findOne({ referralCode })
-        const createReferral = await Referral.create({
-            userId: referralUser.id,
+        if(referralUser){
+          const createReferral = await Referral.create({
+            userId: referralUser._id,
             username: referralUser.username,
             email: email,
             referralCode: referralCode
           });
-        
+        };
         const bankAcct = Math.floor(Math.random() * 10000000000);
         // const pic = await cloudinary.uploader.upload(req.file.path);
 
