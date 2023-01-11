@@ -24,7 +24,6 @@ const userSchema = new mongoose.Schema({
   referralCode: {
     type: String,
     default: referralCodeGenerator.custom('lowercase', 6, 8, 'lgcoins' ),
-  
   },
    wallet_balance: {
     type: mongoose.Decimal128,

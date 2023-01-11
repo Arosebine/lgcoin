@@ -1,10 +1,10 @@
 const express = require('express');
-const { passwordReset, assignedPassword } = require('../controller/passwordReset.controller');
+const { passwordReset, assignedPassword, } = require('../controller/passwordReset.controller');
 const { lgcoinBuy, lgcoinFlutterwave, lgcoinPaystack, lgcoinSquad } = require('../controller/transaction.controller');
 const { userSignup, queryAll, updateImage, updatePassword, queryAllUsers, userLogin, getTransactions, verifyEmail, referralLink, updateUser, deleteUser } = require('../controller/user.controller');
 const { verify_token, createUser } = require('../controller/userEmail.controller');
 const { isAuth } = require('../middleware/authenticate');
-const { bankSignup, updateBankDetails, deleteBankDetails, bankDetails, getBankDetails, }= require('../controller/bank.controller');
+const { bankSignup, updateBankDetails, deleteBankDetails, bankDetails, getBankDetails, getBankDetailsByUsername, }= require('../controller/bank.controller');
 const upload = require('../utils/multer')
 const router = express.Router();
 
@@ -48,8 +48,14 @@ router.post('/squad', lgcoinSquad );
 router.post('/post', bankSignup );
 router.get('/get_banks', bankDetails );
 router.put('/bank_update', updateBankDetails );
+router.get('/bankUser/:username', getBankDetailsByUsername);
 router.get('/alldetails', getBankDetails );
 router.delete('/delete_bank', deleteBankDetails );
+
+
+// Password Reset
+router.post('/reset', passwordReset );
+router.put('/newPassword', assignedPassword);
 
 
 

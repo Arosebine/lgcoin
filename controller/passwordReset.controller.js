@@ -3,6 +3,7 @@ const Token = require("../models/forgotPass.model");
 const sendEmail = require("../utils/emailsender");
 const crypto = require("crypto");
 const Joi = require("joi");
+const bcrypt = require('bcrypt');
 
 
 
@@ -22,11 +23,11 @@ exports.passwordReset = async (req, res) => {
            const token = await new Token({
                 userId: user._id,
                 email: req.body.email,
-                token: crypto.randomBytes(32).toString("hex"),
+                token: crypto.randomBytes(10).toString("hex"),
             }).save();
         
 
-        const link = `${process.env.BASE_URL}/password-reset/${user._id}/${token.token}`;
+        const link = `${process.env.BASE_URL}?users/password-reset/${user._id}/${token.token}`;
         await sendEmail({
             email: user.email,
             subject: `${user.first_name} ${user.last_name} Requested Reset Password Successfully`,
@@ -49,26 +50,23 @@ exports.passwordReset = async (req, res) => {
 
 exports.assignedPassword = async (req, res) => {
     try {
-        const schema = Joi.object({
-            username: Joi.string().required(),
-            password: Joi.string().required() 
-        });
-        const { error } = schema.validate(req.body);
-        if (error) return res.status(400).send(error.details[0].message);
-
-        const user = await User.findOne(req.params.username);
-        if (!user) return res.status(400).send("invalid username");
-
-        const token = await Token.findOne({
-            userId: user._id,
-            token: req.params.token,
-        });
-        if (!token) return res.status(400).send("Invalid link or expired");
-
-        user.password = req.body.password;
-        await user.save();
-        await token.delete();
-
+        const { username, password } = req.body;
+        const existUsername = await User.findOne({ username })
+        if(!existUsername){
+            res.status(501).send('the username does not exist')
+        };
+        const salt = await bcrypt.genSalt(10);
+        const hashedPassword = await bcrypt.hash(password, salt);
+        const newPassword = await User.findOneAndUpdate({
+            username: username
+         },
+         {
+            password: hashedPassword
+         },
+         {
+            new: true,
+         }
+         );
         res.send("password reset successfully.");
     } catch (error) {
         res.send("An error occurred");

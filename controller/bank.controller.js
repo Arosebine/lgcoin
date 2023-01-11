@@ -148,9 +148,10 @@ exports.getBankDetails = async (req, res) => {
 
 
 
-exports.getBankDetailsById = async (req, res) => {
+exports.getBankDetailsByUsername = async (req, res) => {
     try {
-        const bank = await Bank.findById(req.params.id);
+        const { username } = req.body;
+        const bank = await Bank.findOne({ username });
         res.status(200).json({
             status: 'success',
             data: {

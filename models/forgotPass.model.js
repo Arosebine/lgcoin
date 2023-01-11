@@ -11,11 +11,12 @@ const forgotPassSchema = new mongoose.Schema({
     },
     token: {
         type: String,
-        required: true,
-        unique: true,
         lowercase: true,
-        index: true,
     },
+    expiredAt: {
+        type: Date,
+        default: Date.now(),
+    }
 }, {timestamps: true});
 
 
