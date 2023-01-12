@@ -48,7 +48,7 @@ router.post('/squad', lgcoinSquad );
 router.post('/post', bankSignup );
 router.get('/get_banks', bankDetails );
 router.put('/bank_update', updateBankDetails );
-router.get('/bankUser/:username', getBankDetailsByUsername);
+router.get('/:username', getBankDetailsByUsername);
 router.get('/alldetails', getBankDetails );
 router.delete('/delete_bank', deleteBankDetails );
 
