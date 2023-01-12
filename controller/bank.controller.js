@@ -35,9 +35,9 @@ exports.bankSignup = async (req, res) => {
     } catch (err) {
         res.status(400).json({
             status: 'fail,  You have already registered your bank details, if not correct. kindly update it',
-            message: err,
+            message: err.message,
         });
-        console.log(err);
+       
     }
 };
 
@@ -45,8 +45,7 @@ exports.bankSignup = async (req, res) => {
 
 exports.bankDetails = async (req, res) => {
     try {
-        const { username } = req.body;
-        const bank = await Bank.find({ username: username });
+        const bank = await Bank.find({});
         res.status(200).json({
             status: 'success',
             data: {
@@ -56,11 +55,37 @@ exports.bankDetails = async (req, res) => {
     } catch (err) {
         res.status(400).json({
             status: 'fail',
-            message: err,
+            message: err.message,
         });
-        console.log(err);
+       
     }
-}
+};
+
+// get bank details by username
+exports.getBankDetailsByUsername = async (req, res) => {
+    try {
+        const { username } = req.body;
+        const bank = await Bank.find
+        ({
+            username: username
+        });
+        res.status(200).json({
+            status: 'success',
+            data: {
+                bank,
+            },
+        });
+    } catch (err) {
+        res.status(400).json({
+            status: 'fail',
+            message: err.message,
+        });
+
+    }
+};
+
+
+
 
 exports.updateBankDetails = async (req, res) => {
 
@@ -91,9 +116,9 @@ exports.updateBankDetails = async (req, res) => {
     } catch (err) {
         res.status(400).json({
             status: 'fail',
-            message: err,
+            message: err.message,
         });
-        console.log(err);
+       
     }
 }
 
@@ -118,9 +143,9 @@ exports.deleteBankDetails = async (req, res) => {
     } catch (err) {
         res.status(400).json({
             status: 'fail',
-            message: err,
+            message: err.message,
         });
-        console.log(err);
+       
     }
 }
 
@@ -139,28 +164,12 @@ exports.getBankDetails = async (req, res) => {
     } catch (err) {
         res.status(400).json({
             status: 'fail',
-            message: err,
+            message: err.message,
         });
-        console.log(err);
+       
     }
 }
 
-
-
-
-exports.getBankDetailsByUsername = async (req, res) => {
-    try {
-        const { username } = req.body;
-        const bank = await Bank.findOne({ username });
-        res.status(200).json(bank);
-    } catch (err) {
-        res.status(400).json({
-            status: 'fail',
-            message: err,
-        });
-        console.log(err);
-    }
-}
 
 
 
@@ -191,9 +200,8 @@ exports.updateBankDetailsById = async (req, res) => {
         } catch (err) {
             res.status(400).json({
                 status: 'fail',
-                message: err,
+                message: err.message,
             });
-            console.log(err);
         }
     }
 
@@ -216,9 +224,9 @@ exports.deleteBankDetailsById = async (req, res) => {
     } catch (err) {
         res.status(400).json({
             status: 'fail',
-            message: err,
+            message: err.message,
         });
-        console.log(err);
+       
     }
 }
 
