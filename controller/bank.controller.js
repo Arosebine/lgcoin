@@ -152,14 +152,7 @@ exports.getBankDetailsByUsername = async (req, res) => {
     try {
         const { username } = req.body;
         const bank = await Bank.findOne({ username });
-<<<<<<< HEAD
         res.status(200).json(bank);
-=======
-        res.status(200).json({
-            status: 'success',
-            data: bank,            
-        });
->>>>>>> edf152dc13a9f0fedfc9d79839f7145a861d6a74
     } catch (err) {
         res.status(400).json({
             status: 'fail',
