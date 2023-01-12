@@ -61,10 +61,12 @@ exports.bankDetails = async (req, res) => {
     }
 };
 
+
+
 // get bank details by username
 exports.getBankDetailsByUsername = async (req, res) => {
     try {
-        const { username } = req.body;
+        const username  = req.params.username;
         const bank = await Bank.find
         ({
             username: username
